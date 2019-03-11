@@ -1,6 +1,6 @@
 # Sensibo API for Go
 
-Sensibo API implementation in Golang
+Sensibo API implementation in Golang  
 Fork from github.com/llun/sensibo-golang
 
 Some changes was made to get more information about pods
