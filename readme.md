@@ -1,6 +1,9 @@
 # Sensibo API for Go
 
 Sensibo API implementation in Golang
+Fork from github.com/llun/sensibo-golang
+
+Some changes was made to get more information about pods
 
 ## Usage
 
@@ -10,7 +13,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/llun/sensibo-golang"
+	"github.com/tskaard/sensibo-golang"
 )
 
 func main() {

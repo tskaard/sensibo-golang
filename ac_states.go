@@ -24,12 +24,17 @@ type AcStateLog struct {
 	ChangedProperties []string `json:"changedProperties"`
 	AcState           AcState  `json:"acState"`
 }
+type AcStateChange struct {
+	NewValue string  `json:"newValue"`
+	AcState  AcState `json:"currentAcState"`
+}
 
 type AcStatesResult struct {
 	Status string       `json:"status"`
 	Result []AcStateLog `json:"result"`
 }
 
+// GetAcStates gets the AC state from a pod
 func (s *Sensibo) GetAcStates(deviceID string) ([]AcStateLog, error) {
 	data, err := s.get(fmt.Sprintf("pods/%v/acStates", deviceID), url.Values{})
 	if err != nil {
@@ -62,6 +67,30 @@ func (s *Sensibo) ReplaceState(deviceID string, state AcState) (*AcStateLog, err
 		Result AcStateLog `json:"result"`
 	}
 	data, err := s.post(fmt.Sprintf("pods/%v/acStates", deviceID), currentStateData)
+	if err != nil {
+		return nil, err
+	}
+
+	err = json.Unmarshal(data, &result)
+	if err != nil {
+		return nil, err
+	}
+	return &result.Result, nil
+}
+
+func (s *Sensibo) UpdateState(deviceID string, property string, state AcStateChange) (*AcStateLog, error) {
+	currentStateData, err := json.Marshal(struct {
+		AcState AcStateChange `json:"currentAcState"`
+	}{state})
+	if err != nil {
+		return nil, err
+	}
+
+	var result struct {
+		Status string     `json:"status"`
+		Result AcStateLog `json:"result"`
+	}
+	data, err := s.patch(fmt.Sprintf("pods/%v/acStates/%v", deviceID, property), currentStateData)
 	if err != nil {
 		return nil, err
 	}
